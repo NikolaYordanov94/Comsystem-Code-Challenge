@@ -1,9 +1,24 @@
 package com.comsystem.homework.robot;
 
-
+import com.comsystem.homework.model.RobotAction;
 import com.comsystem.homework.model.RobotPlan;
+import com.comsystem.homework.utils.RobotUtil;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
 public class RobotOperations {
+
+    private List<RobotAction> robotActionList;
+    private final RobotUtil robotUtil;
+
+    public RobotOperations(RobotUtil robotUtil) {
+        this.robotActionList = new ArrayList<>();
+        this.robotUtil = robotUtil;
+    }
+
 
     /**
      * An algorithm that converts a number of days into an action plan.
@@ -15,8 +30,20 @@ public class RobotOperations {
      * @see RobotPlan
      */
     public RobotPlan excavateStonesForDays(int days) {
-        // TODO
-        return null;
+        robotUtil.validateDays(days);
+
+        int excavatedStones = 0;
+        int robots = 0;
+
+        robots += cloningRobots(days, robots, robotActionList);
+
+        for (int i = 0; i < robots; i++) {
+            robotActionList.add(RobotAction.DIG);
+        }
+
+        excavatedStones += robots;
+
+        return new RobotPlan(days, excavatedStones, robotActionList);
     }
 
     /**
@@ -30,8 +57,38 @@ public class RobotOperations {
      * @see RobotPlan
      */
     public RobotPlan daysRequiredToCollectStones(int numberOfStones) {
-        // TODO
-        return null;
+        robotUtil.validateNumberOfStones(numberOfStones);
+
+        int excavatedStones = numberOfStones;
+        int robots = 0;
+        int days = (int) (Math.ceil((Math.log(numberOfStones) / Math.log(2))) + 1);
+
+        robots += cloningRobots(days, robots, robotActionList);
+
+        for (int i = 0; i < robots; i++) {
+            robotActionList.add(RobotAction.DIG);
+        }
+
+        excavatedStones += robots;
+
+        return new RobotPlan(days, excavatedStones, robotActionList);
+    }
+
+    /*
+    Assuming that all cloned robots have also the functionality to clone themselves
+     */
+    public int cloningRobots(int days, int robots, List<RobotAction> robotActions){
+        int totalRobots = robots;
+
+        for (int i = 0; i < days - 1; i++) {
+            int robotsToday = totalRobots;
+
+            for (int j = 0; j < robotsToday; j++) {
+                robotActions.add(RobotAction.CLONE);
+            }
+            totalRobots *= 2;
+        }
+        return totalRobots;
     }
 
 }
