@@ -11,11 +11,9 @@ import java.util.List;
 @Service
 public class RobotOperations {
 
-    private List<RobotAction> robotActionList;
     private final RobotUtil robotUtil;
 
     public RobotOperations(RobotUtil robotUtil) {
-        this.robotActionList = new ArrayList<>();
         this.robotUtil = robotUtil;
     }
 
@@ -32,6 +30,7 @@ public class RobotOperations {
     public RobotPlan excavateStonesForDays(int days) {
         robotUtil.validateDays(days);
 
+        List<RobotAction> robotActionList = new ArrayList<>();
         int excavatedStones = 0;
         int robots = 0;
 
@@ -59,6 +58,7 @@ public class RobotOperations {
     public RobotPlan daysRequiredToCollectStones(int numberOfStones) {
         robotUtil.validateNumberOfStones(numberOfStones);
 
+        List<RobotAction> robotActionList = new ArrayList<>();
         int excavatedStones = numberOfStones;
         int robots = 0;
         int days = (int) (Math.ceil((Math.log(numberOfStones) / Math.log(2))) + 1);
